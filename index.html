@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DuArt Store — Lojão do Contrabaixo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f4f5f7;
+  --surface:#ffffff;
+  --surface2:#f9fafb;
+  --text:#0f1218;
+  --text2:#4b5563;
+  --muted:#9ca3af;
+  --accent:#2563eb;
+  --accent-light:#eff4ff;
+  --accent-mid:#bfcffd;
+  --border:#e5e7eb;
+  --border2:#d1d5db;
+  --danger:#ef4444;
+  --success:#10b981;
+  --tag-bg:#f0f4ff;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.05);
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:0 4px 12px rgba(0,0,0,0.08),0 16px 40px rgba(0,0,0,0.07);
+  --radius:10px;
+  --radius-sm:6px;
+  --radius-lg:14px;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+/* ── HEADER ── */
+header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow-sm);
+}
+.header-inner{
+  max-width:1280px;margin:0 auto;padding:0 2rem;
+  height:62px;display:flex;align-items:center;
+  justify-content:space-between;gap:1rem;
+}
+.logo{
+  display:flex;align-items:center;gap:0.55rem;
+  text-decoration:none;white-space:nowrap;
+}
+.logo-mark{
+  width:34px;height:34px;background:var(--accent);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.logo-text{
+  font-family:'Syne',sans-serif;
+  font-size:1.25rem;font-weight:700;
+  color:var(--text);letter-spacing:-0.01em;
+}
+.logo-text span{color:var(--accent);}
+
+.header-search{flex:1;max-width:360px;position:relative;}
+.header-search input{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.5rem 1rem 0.5rem 2.4rem;
+  font-family:'Inter',sans-serif;font-size:0.875rem;
+  color:var(--text);outline:none;
+  transition:border-color 0.18s,box-shadow 0.18s;
+}
+.header-search input::placeholder{color:var(--muted);}
+.header-search input:focus{
+  border-color:var(--accent);background:var(--surface);
+  box-shadow:0 0 0 3px rgba(37,99,235,0.1);
+}
+.header-search svg{
+  position:absolute;left:0.72rem;top:50%;transform:translateY(-50%);
+  color:var(--muted);pointer-events:none;
+}
+
+.btn-add{
+  display:flex;align-items:center;gap:0.4rem;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  padding:0.55rem 1.1rem;
+  font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;
+  transition:background 0.18s,box-shadow 0.18s,transform 0.1s;
+  box-shadow:0 1px 2px rgba(37,99,235,0.2),0 4px 12px rgba(37,99,235,0.15);
+}
+.btn-add:hover{background:#1d4ed8;box-shadow:0 2px 4px rgba(37,99,235,0.25),0 6px 16px rgba(37,99,235,0.2);}
+.btn-add:active{transform:scale(0.97);}
+
+.btn-lock{
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  width:36px;height:36px;cursor:pointer;
+  transition:all 0.18s;
+  padding:0;
+}
+.btn-lock:hover{border-color:var(--border2);color:var(--text);}
+.btn-lock.unlocked{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-light);}
+
+.pwd-modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(15,18,24,0.45);backdrop-filter:blur(8px);
+  z-index:300;align-items:center;justify-content:center;padding:1rem;
+}
+.pwd-modal-bg.open{display:flex;}
+.pwd-modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);width:100%;max-width:360px;
+  padding:2rem;position:relative;
+  box-shadow:0 8px 40px rgba(0,0,0,0.14);
+  text-align:center;
+}
+.pwd-icon{
+  width:48px;height:48px;background:var(--accent-light);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1rem;color:var(--accent);
+}
+.pwd-modal h3{
+  font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;
+  color:var(--text);margin-bottom:0.35rem;
+}
+.pwd-modal p{font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;}
+.pwd-input-wrap{position:relative;margin-bottom:0.75rem;}
+.pwd-input-wrap input{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.65rem 2.6rem 0.65rem 0.9rem;
+  font-family:'Inter',sans-serif;font-size:0.9rem;
+  color:var(--text);outline:none;text-align:center;letter-spacing:0.05em;
+  transition:border-color 0.18s,box-shadow 0.18s;
+}
+.pwd-input-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.pwd-input-wrap input.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,0.1);}
+.pwd-toggle{
+  position:absolute;right:0.7rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  padding:0;display:flex;align-items:center;
+}
+.pwd-error{font-size:0.75rem;color:var(--danger);margin-bottom:0.75rem;min-height:1rem;}
+.btn-pwd-ok{
+  width:100%;background:var(--accent);color:#fff;
+  border:none;border-radius:var(--radius-sm);padding:0.7rem;
+  font-family:'Inter',sans-serif;font-size:0.875rem;font-weight:600;
+  cursor:pointer;transition:background 0.18s;
+  box-shadow:0 1px 2px rgba(37,99,235,0.2),0 4px 12px rgba(37,99,235,0.15);
+}
+.btn-pwd-ok:hover{background:#1d4ed8;}
+.btn-pwd-cancel{
+  width:100%;background:transparent;color:var(--muted);
+  border:none;padding:0.5rem;margin-top:0.4rem;
+  font-family:'Inter',sans-serif;font-size:0.8rem;cursor:pointer;
+  transition:color 0.15s;
+}
+.btn-pwd-cancel:hover{color:var(--text);}
+
+
+/* ── BANNER ── */
+.banner{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:3rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.banner::after{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(37,99,235,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.banner-text{max-width:520px;}
+.banner-eyebrow{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  background:var(--accent-light);color:var(--accent);
+  border-radius:999px;padding:0.25rem 0.85rem;
+  font-size:0.75rem;font-weight:600;
+  letter-spacing:0.04em;text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.banner h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.8rem,4vw,2.6rem);
+  font-weight:800;line-height:1.1;
+  letter-spacing:-0.03em;color:var(--text);
+  margin-bottom:0.75rem;
+}
+.banner h1 em{color:var(--accent);font-style:normal;}
+.banner p{color:var(--text2);font-size:1rem;line-height:1.65;font-weight:400;}
+.banner-stats{
+  display:flex;gap:2rem;flex-shrink:0;
+}
+.stat{text-align:center;}
+.stat-num{
+  font-family:'Syne',sans-serif;
+  font-size:2rem;font-weight:700;color:var(--text);
+  line-height:1;display:block;
+}
+.stat-label{font-size:0.75rem;color:var(--muted);margin-top:0.25rem;font-weight:500;}
+
+/* ── CATS ── */
+.cats-wrap{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0.85rem 2rem;
+  display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;
+  max-width:100%;
+}
+.cat-pill{
+  background:transparent;
+  border:1px solid var(--border);border-radius:999px;
+  padding:0.3rem 0.95rem;
+  font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:500;
+  color:var(--text2);cursor:pointer;
+  transition:all 0.15s;
+}
+.cat-pill:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-light);}
+.cat-pill.active{
+  background:var(--accent);border-color:var(--accent);
+  color:#fff;
+}
+
+/* ── GRID ── */
+.grid-wrap{
+  max-width:1280px;margin:0 auto;
+  padding:1.5rem 2rem 4rem;
+}
+.grid-meta{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  margin-bottom:1.2rem;flex-wrap:wrap;gap:0.5rem;
+}
+.grid-count{font-size:0.82rem;color:var(--muted);font-weight:500;}
+.sort-select{
+  background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.35rem 0.75rem;
+  font-family:'Inter',sans-serif;font-size:0.8rem;
+  color:var(--text);cursor:pointer;outline:none;
+  transition:border-color 0.15s;
+}
+.sort-select:focus{border-color:var(--accent);}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+  gap:1.1rem;
+}
+
+/* ── CARD ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;display:flex;flex-direction:column;
+  position:relative;
+  box-shadow:var(--shadow);
+  transition:border-color 0.22s,transform 0.22s,box-shadow 0.22s;
+}
+.card:hover{
+  border-color:var(--border2);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-lg);
+}
+
+.card-img{
+  width:100%;aspect-ratio:16/9;
+  object-fit:cover;display:block;
+}
+.card-img-placeholder{
+  width:100%;aspect-ratio:16/9;
+  background:linear-gradient(135deg,#f0f4ff 0%,#e8ecf8 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.6rem;
+}
+
+.card-body{
+  padding:1rem 1.15rem;flex:1;
+  display:flex;flex-direction:column;gap:0.4rem;
+}
+.card-tag{
+  display:inline-flex;align-items:center;gap:0.25rem;
+  background:var(--tag-bg);
+  border-radius:999px;padding:0.18rem 0.65rem;
+  font-size:0.7rem;font-weight:600;
+  color:var(--accent);width:fit-content;
+  letter-spacing:0.02em;
+}
+.card-title{
+  font-size:0.95rem;font-weight:600;
+  line-height:1.3;color:var(--text);
+}
+.card-desc{
+  font-size:0.81rem;color:var(--text2);
+  line-height:1.55;flex:1;
+}
+.card-domain{
+  font-size:0.71rem;color:var(--muted);
+  display:flex;align-items:center;gap:0.3rem;margin-top:0.1rem;
+}
+
+.card-footer{
+  padding:0 1.15rem 1rem;
+  display:flex;gap:0.4rem;align-items:center;
+}
+.btn-visit{
+  flex:1;display:flex;align-items:center;
+  justify-content:center;gap:0.4rem;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  padding:0.55rem;
+  font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;
+  text-decoration:none;cursor:pointer;
+  transition:background 0.15s,box-shadow 0.15s;
+  box-shadow:0 1px 3px rgba(37,99,235,0.2);
+}
+.btn-visit:hover{background:#1d4ed8;}
+
+.btn-icon{
+  width:34px;height:34px;flex-shrink:0;
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);
+  transition:all 0.15s;
+}
+.btn-icon:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-light);}
+.btn-icon.favorited{color:var(--danger);border-color:#fecaca;background:#fff5f5;}
+
+/* ── CARD ACTIONS ── */
+.card-actions{
+  position:absolute;top:0.6rem;right:0.6rem;
+  display:flex;gap:0.3rem;opacity:0;
+  transition:opacity 0.18s;
+}
+.card:hover .card-actions{opacity:1;}
+.action-btn{
+  width:28px;height:28px;border-radius:var(--radius-sm);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.1s;
+}
+.action-btn:active{transform:scale(0.91);}
+.action-edit{background:rgba(255,255,255,0.95);color:var(--text2);box-shadow:0 1px 4px rgba(0,0,0,0.12);}
+.action-edit:hover{color:var(--accent);}
+.action-delete{background:var(--danger);color:#fff;box-shadow:0 1px 4px rgba(239,68,68,0.3);}
+
+/* ── MODAL ── */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(15,18,24,0.45);
+  backdrop-filter:blur(8px);
+  z-index:200;align-items:center;justify-content:center;padding:1rem;
+}
+.modal-bg.open{display:flex;}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  width:100%;max-width:500px;
+  padding:2rem;position:relative;
+  box-shadow:0 8px 40px rgba(0,0,0,0.14),0 2px 8px rgba(0,0,0,0.08);
+}
+.modal h2{
+  font-family:'Syne',sans-serif;
+  font-size:1.15rem;font-weight:700;
+  color:var(--text);margin-bottom:1.5rem;
+  letter-spacing:-0.01em;
+}
+.modal-close{
+  position:absolute;top:1.1rem;right:1.1rem;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-sm);width:30px;height:30px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);transition:all 0.15s;
+}
+.modal-close:hover{border-color:var(--border2);color:var(--text);}
+
+.field{margin-bottom:0.9rem;}
+.field label{
+  display:block;font-size:0.75rem;font-weight:600;
+  color:var(--text2);margin-bottom:0.4rem;
+  letter-spacing:0.01em;
+}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.6rem 0.85rem;
+  font-family:'Inter',sans-serif;font-size:0.875rem;
+  color:var(--text);outline:none;resize:vertical;
+  transition:border-color 0.18s,box-shadow 0.18s;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--accent);background:var(--surface);
+  box-shadow:0 0 0 3px rgba(37,99,235,0.1);
+}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+
+.btn-save{
+  width:100%;margin-top:0.5rem;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  padding:0.75rem;
+  font-family:'Inter',sans-serif;font-size:0.875rem;font-weight:600;
+  cursor:pointer;
+  box-shadow:0 1px 2px rgba(37,99,235,0.2),0 4px 12px rgba(37,99,235,0.18);
+  transition:background 0.18s,box-shadow 0.18s;
+}
+.btn-save:hover{background:#1d4ed8;}
+
+/* ── EMPTY ── */
+.empty{
+  grid-column:1/-1;text-align:center;
+  padding:4rem 1rem;color:var(--muted);
+}
+.empty-icon{
+  width:56px;height:56px;background:var(--bg);
+  border:1px solid var(--border);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1rem;font-size:1.6rem;
+}
+.empty strong{font-size:0.95rem;color:var(--text2);font-weight:600;}
+.empty p{font-size:0.82rem;margin-top:0.35rem;}
+
+@media(max-width:640px){
+  .header-inner{padding:0 1rem;}
+  .banner{padding:2rem 1rem;}
+  .banner-stats{display:none;}
+  .cats-wrap,.grid-wrap{padding-left:1rem;padding-right:1rem;}
+  .field-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </div>
+      <span class="logo-text">DuArt<span>Store</span></span>
+    </a>
+    <div class="header-search">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar produto, marca…">
+    </div>
+      <button class="btn-lock" id="btnLock" onclick="openPwdModal()" title="Área administrativa">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="lockIcon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </button>
+      <button class="btn-add" id="btnAdd" style="display:none" onclick="openModal()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Adicionar
+    </button>
+  </div>
+</header>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-text">
+    <div class="banner-eyebrow">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+      Links selecionados por Eduardo Duartte
+    </div>
+    <h1>Lojão do<br><em>Contrabaixo</em></h1>
+  </div>
+  <div class="banner-stats">
+    <div class="stat">
+      <span class="stat-num" id="statTotal">0</span>
+      <div class="stat-label">Produtos</div>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="statFavs">0</span>
+      <div class="stat-label">Favoritos</div>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="statCats">0</span>
+      <div class="stat-label">Categorias</div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIAS -->
+<div class="cats-wrap" id="catList"></div>
+
+<!-- GRID -->
+<div class="grid-wrap">
+  <div class="grid-meta">
+    <span class="grid-count" id="gridCount">0 produtos</span>
+    <select class="sort-select" id="sortSelect" onchange="renderCards()">
+      <option value="newest">Mais recentes</option>
+      <option value="alpha">A → Z</option>
+      <option value="fav">Favoritos primeiro</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <h2 id="modalTitle">Novo Produto</h2>
+    <div class="field">
+      <label>Nome do Produto *</label>
+      <input id="fName" type="text" placeholder="Ex: Fender Jazz Bass Player">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Categoria</label>
+        <select id="fCat">
+          <option value="">— Selecione —</option>
+          <option>Baixos</option>
+          <option>Captadores</option>
+          <option>Circuitos</option>
+          <option>Pedais</option>
+          <option>Amplificadores</option>
+          <option>Violões</option>
+          <option>Guitarra</option>
+          <option>Knobs</option>
+          <option>Potenciômetros</option>
+          <option>Outros</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Emoji / Ícone</label>
+        <input id="fEmoji" type="text" placeholder="🎸" maxlength="4">
+      </div>
+    </div>
+    <div class="field">
+      <label>Link do Produto *</label>
+      <input id="fUrl" type="url" placeholder="https://…">
+    </div>
+    <div class="field">
+      <label>URL da Imagem (opcional)</label>
+      <input id="fImg" type="url" placeholder="https://…/foto.jpg">
+    </div>
+    <div class="field">
+      <label>Descrição</label>
+      <textarea id="fDesc" rows="2" placeholder="Breve descrição, preço, observações…"></textarea>
+    </div>
+    <button class="btn-save" onclick="saveProduct()">Salvar Produto</button>
+  </div>
+</div>
+
+<!-- MODAL SENHA -->
+<div class="pwd-modal-bg" id="pwdModalBg">
+  <div class="pwd-modal">
+    <div class="pwd-icon">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h3>Área administrativa</h3>
+    <p>Digite a senha para habilitar edição</p>
+    <div class="pwd-input-wrap">
+      <input type="password" id="pwdInput" placeholder="••••••••••" onkeydown="if(event.key==='Enter')confirmPwd()">
+      <button class="pwd-toggle" onclick="togglePwdVis()" tabindex="-1" id="pwdToggleBtn">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="eyeIcon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="pwd-error" id="pwdError"></div>
+    <button class="btn-pwd-ok" onclick="confirmPwd()">Entrar</button>
+    <button class="btn-pwd-cancel" onclick="closePwdModal()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+const PWD_HASH = 'b798d85bfeaaf5e2c124061883ac269df4d7c702242592cbca23fd15af2e4d27';
+async function hashStr(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+
+let isAdmin = sessionStorage.getItem('bg_admin') === '1';
+let products = JSON.parse(localStorage.getItem('bassgrid_products') || '[]');
+let editingId = null;
+let currentCat = '';
+
+const CAT_FIXED = ['Baixos','Captadores','Circuitos','Pedais','Amplificadores','Violões','Guitarra','Knobs','Potenciômetros','Outros'];
+const catEmojis = {'Baixos':'🎸','Captadores':'🔊','Circuitos':'⚡','Pedais':'🎛️','Amplificadores':'📻','Violões':'🪕','Guitarra':'🎵','Knobs':'🎚️','Potenciômetros':'🔩','Outros':'📦'};
+
+if (!products.length) {
+  products = [
+    { id: uid(), name: 'Fender Player Jazz Bass', cat: 'Baixos', emoji: '🎸', url: 'https://www.fender.com', img: '', desc: 'Jazz Bass série Player — timbre clássico Fender', fav: true, ts: Date.now()-5000 },
+    { id: uid(), name: 'Bartolini 9J1 Jazz Bass', cat: 'Captadores', emoji: '🔊', url: 'https://bartolini.net', img: '', desc: 'Captador single-coil hum-canceling para jazz bass', fav: false, ts: Date.now()-4000 },
+    { id: uid(), name: 'MXR M80 Bass D.I.+', cat: 'Pedais', emoji: '🎛️', url: 'https://www.jimdunlop.com', img: '', desc: 'DI + distorção + EQ — essencial no rack', fav: true, ts: Date.now()-3000 },
+    { id: uid(), name: 'Aguilar Tone Hammer 500', cat: 'Amplificadores', emoji: '📻', url: 'https://www.aguilaramp.com', img: '', desc: '500W, pré-amplificador Aguilar AG, super compacto', fav: false, ts: Date.now()-2000 },
+    { id: uid(), name: 'Nordstrand Big Single', cat: 'Captadores', emoji: '🔊', url: 'https://nordstrandaudio.com', img: '', desc: 'Single-coil de enrolamento largo para exigentes', fav: false, ts: Date.now()-1000 },
+    { id: uid(), name: 'Darkglass B7K Ultra', cat: 'Pedais', emoji: '🎛️', url: 'https://www.darkglass.com', img: '', desc: 'Pré-amp + distorção com EQ paramétrico — referência moderna', fav: true, ts: Date.now() },
+  ];
+  save();
+}
+
+function uid() { return Math.random().toString(36).slice(2) + Date.now(); }
+function save() { localStorage.setItem('bassgrid_products', JSON.stringify(products)); }
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = products.length;
+  document.getElementById('statFavs').textContent = products.filter(p => p.fav).length;
+  const cats = new Set(products.map(p => p.cat).filter(Boolean));
+  document.getElementById('statCats').textContent = cats.size;
+}
+
+function buildCatPills() {
+  const el = document.getElementById('catList');
+  const used = new Set(products.map(p => p.cat).filter(Boolean));
+  const cats = CAT_FIXED.filter(c => used.has(c));
+  el.innerHTML = `<span class="cat-pill ${currentCat===''?'active':''}" onclick="filterCat(this,'')">Todos</span>`;
+  cats.forEach(c => {
+    el.innerHTML += `<span class="cat-pill ${currentCat===c?'active':''}" onclick="filterCat(this,'${c}')">${catEmojis[c]||'📦'} ${c}</span>`;
+  });
+}
+
+function filterCat(el, cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderCards();
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
+  let list = products.filter(p => {
+    const mc = !currentCat || p.cat === currentCat;
+    const mq = !q || p.name.toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q) || (p.cat||'').toLowerCase().includes(q);
+    return mc && mq;
+  });
+  if (sort === 'alpha') list.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === 'fav') list.sort((a,b) => (b.fav?1:0)-(a.fav?1:0) || b.ts-a.ts);
+  else list.sort((a,b) => b.ts - a.ts);
+  return list;
+}
+
+function renderCards() {
+  updateStats();
+  buildCatPills();
+  const list = getFiltered();
+  const grid = document.getElementById('grid');
+  document.getElementById('gridCount').textContent = `${list.length} produto${list.length!==1?'s':''}`;
+
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty">
+      <div class="empty-icon">🎸</div>
+      <strong>Nenhum produto encontrado</strong>
+      <p>Clique em <b>Adicionar</b> para cadastrar seu primeiro link.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(p => {
+    const domain = (() => { try { return new URL(p.url).hostname.replace('www.',''); } catch(e) { return ''; } })();
+    const emoji = p.emoji || catEmojis[p.cat] || '🔗';
+    const imgHtml = p.img ? `<img class="card-img" src="${esc(p.img)}" alt="${esc(p.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
+    const ph = `<div class="card-img-placeholder" ${p.img?'style="display:none"':''}>${emoji}</div>`;
+
+    return `<div class="card" id="card-${p.id}">
+      ${imgHtml}${ph}
+      <div class="card-actions" style="${isAdmin?'':'display:none'}">
+        <button class="action-btn action-edit" onclick="editProduct('${p.id}')" title="Editar">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+        </button>
+        <button class="action-btn action-delete" onclick="deleteProduct('${p.id}')" title="Remover">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+      <div class="card-body">
+        ${p.cat ? `<span class="card-tag">${emoji} ${p.cat}</span>` : ''}
+        <div class="card-title">${esc(p.name)}</div>
+        ${p.desc ? `<div class="card-desc">${esc(p.desc)}</div>` : ''}
+        ${domain ? `<div class="card-domain"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>${domain}</div>` : ''}
+      </div>
+      <div class="card-footer">
+        <a href="${esc(p.url)}" target="_blank" rel="noopener" class="btn-visit">
+          Acessar
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <button class="btn-icon ${p.fav?'favorited':''}" onclick="toggleFav('${p.id}')" title="Favoritar">
+          <svg width="14" height="14" fill="${p.fav?'currentColor':'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <button class="btn-icon" onclick="copyLink('${esc(p.url)}')" title="Copiar link">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toggleFav(id) {
+  const p = products.find(x => x.id === id);
+  if (p) { p.fav = !p.fav; save(); renderCards(); }
+}
+
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    const t = document.createElement('div');
+    t.textContent = '✓ Link copiado!';
+    Object.assign(t.style, {
+      position:'fixed', bottom:'1.5rem', left:'50%', transform:'translateX(-50%)',
+      background:'#0f1218', color:'#fff', padding:'0.6rem 1.25rem',
+      borderRadius:'8px', fontSize:'0.82rem', fontWeight:'500',
+      zIndex:'999', pointerEvents:'none',
+      boxShadow:'0 4px 20px rgba(0,0,0,0.18)'
+    });
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2000);
+  });
+}
+
+function openModal(id) {
+  editingId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Editar Produto' : 'Novo Produto';
+  if (id) {
+    const p = products.find(x => x.id === id);
+    document.getElementById('fName').value = p.name;
+    document.getElementById('fCat').value = p.cat;
+    document.getElementById('fEmoji').value = p.emoji || '';
+    document.getElementById('fUrl').value = p.url;
+    document.getElementById('fImg').value = p.img || '';
+    document.getElementById('fDesc').value = p.desc || '';
+  } else {
+    ['fName','fUrl','fImg','fDesc','fEmoji'].forEach(i => document.getElementById(i).value = '');
+    document.getElementById('fCat').value = '';
+  }
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+function editProduct(id) { openModal(id); }
+
+function deleteProduct(id) {
+  if (!confirm('Remover este produto?')) return;
+  products = products.filter(p => p.id !== id);
+  save(); renderCards();
+}
+
+function saveProduct() {
+  const name = document.getElementById('fName').value.trim();
+  const url  = document.getElementById('fUrl').value.trim();
+  if (!name || !url) { alert('Nome e link são obrigatórios.'); return; }
+  if (editingId) {
+    const p = products.find(x => x.id === editingId);
+    if (p) {
+      p.name = name; p.cat = document.getElementById('fCat').value;
+      p.emoji = document.getElementById('fEmoji').value.trim();
+      p.url = url; p.img = document.getElementById('fImg').value.trim();
+      p.desc = document.getElementById('fDesc').value.trim();
+    }
+  } else {
+    products.unshift({
+      id: uid(), name, cat: document.getElementById('fCat').value,
+      emoji: document.getElementById('fEmoji').value.trim(),
+      url, img: document.getElementById('fImg').value.trim(),
+      desc: document.getElementById('fDesc').value.trim(),
+      fav: false, ts: Date.now()
+    });
+  }
+  save(); closeModal(); renderCards();
+}
+
+function applyAdminUI(){
+  const add = document.getElementById('btnAdd');
+  const lock = document.getElementById('btnLock');
+  const lockIcon = document.getElementById('lockIcon');
+  if(isAdmin){
+    add.style.display='flex';
+    lock.classList.add('unlocked');
+    lockIcon.innerHTML='<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 7-4.7"/>';
+  } else {
+    add.style.display='none';
+    lock.classList.remove('unlocked');
+    lockIcon.innerHTML='<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>';
+  }
+  renderCards();
+}
+
+function openPwdModal(){
+  if(isAdmin){ logout(); return; }
+  document.getElementById('pwdInput').value='';
+  document.getElementById('pwdError').textContent='';
+  document.getElementById('pwdInput').classList.remove('error');
+  document.getElementById('pwdModalBg').classList.add('open');
+  setTimeout(()=>document.getElementById('pwdInput').focus(),80);
+}
+function closePwdModal(){ document.getElementById('pwdModalBg').classList.remove('open'); }
+
+function togglePwdVis(){
+  const inp=document.getElementById('pwdInput');
+  const icon=document.getElementById('eyeIcon');
+  if(inp.type==='password'){
+    inp.type='text';
+    icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    inp.type='password';
+    icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+async function confirmPwd(){
+  const val = document.getElementById('pwdInput').value;
+  const h = await hashStr(val);
+  if(h === PWD_HASH){
+    isAdmin=true;
+    sessionStorage.setItem('bg_admin','1');
+    closePwdModal();
+    applyAdminUI();
+  } else {
+    document.getElementById('pwdError').textContent='Senha incorreta. Tente novamente.';
+    document.getElementById('pwdInput').classList.add('error');
+    document.getElementById('pwdInput').value='';
+    document.getElementById('pwdInput').focus();
+  }
+}
+
+function logout(){
+  isAdmin=false;
+  sessionStorage.removeItem('bg_admin');
+  applyAdminUI();
+}
+
+document.getElementById('pwdModalBg').addEventListener('click',function(e){if(e.target===this)closePwdModal();});
+document.getElementById('modalBg').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('searchInput').addEventListener('input', renderCards);
+
+applyAdminUI();
+</script>
+</body>
+</html>
